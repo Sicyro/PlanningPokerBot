@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/planning_poker
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+bot:
+  name: "PlanningPokerBot"
+  token: "${BOT_TOKEN:7970514385:AAHHJpDSiYrT7EdSzdf1tFm-zOO0luwFe0s}"
+logging:
+  config: "classpath:logback.xml"
