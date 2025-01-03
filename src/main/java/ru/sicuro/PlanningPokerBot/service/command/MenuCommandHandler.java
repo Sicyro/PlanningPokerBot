@@ -45,6 +45,14 @@ public class MenuCommandHandler implements CommandHandler {
     private static List<List<InlineKeyboardButton>> getListsButton() {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
 
+        // Кнопка создания команды
+        List<InlineKeyboardButton> rowInLineCreateTeam = new ArrayList<>();
+        var createTeamButton = new InlineKeyboardButton();
+        createTeamButton.setText("Команды");
+        createTeamButton.setCallbackData("TEAM_BUTTON");
+        rowInLineCreateTeam.add(createTeamButton);
+        rowsInLine.add(rowInLineCreateTeam);
+
         // Кнопка регистрации
         List<InlineKeyboardButton> rowInLineRegister = new ArrayList<>();
         var registerButton = new InlineKeyboardButton();
@@ -53,13 +61,6 @@ public class MenuCommandHandler implements CommandHandler {
         rowInLineRegister.add(registerButton);
         rowsInLine.add(rowInLineRegister);
 
-        // Кнопка создания команды
-        List<InlineKeyboardButton> rowInLineCreateTeam = new ArrayList<>();
-        var createTeamButton = new InlineKeyboardButton();
-        createTeamButton.setText("Команды");
-        createTeamButton.setCallbackData("TEAM_BUTTON");
-        rowInLineCreateTeam.add(createTeamButton);
-        rowsInLine.add(rowInLineCreateTeam);
 
         return rowsInLine;
     }

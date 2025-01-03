@@ -39,7 +39,7 @@ public class RegisterButtonHandler implements ButtonHandler {
         var queueUser = userRepository.findByChatId(chatId);
         User user;
         if (queueUser.isEmpty()) {
-            String userName = update.getCallbackQuery().getMessage().getFrom().getUserName();
+            String userName = update.getCallbackQuery().getMessage().getChat().getUserName();
 
             // Создаём нового пользователя
             user = registerUser(chatId, userName);

@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.sicuro.PlanningPokerBot.config.BotConfig;
+import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.button.*;
@@ -38,6 +39,10 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
     private final RegisterCommandHandler registerCommandHandler;
     private final MyTeamRenameButtonHandler myTeamRenameButtonHandler;
     private final MyTeamDeleteButtonHandler myTeamDeleteButtonHandler;
+    private final MyTeamGetMemberButtonHandler myTeamGetMemberButtonHandler;
+    private final MyTeamAddMemberButtonHandler myTeamAddMemberButtonHandler;
+    private final MyTeamAddMemberStepButtonHandler myTeamAddMemberStepButtonHandler;
+    private final MyTeamAddMemberCompleteButtonHandler myTeamAddMemberCompleteButtonHandler;
 
     // Кнопки бота
     @Getter
@@ -48,22 +53,34 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
      * @param config Конфигурация бота
      * @param userRepository Класс для работы с БД, таблица пользователи
      */
-    public PlanningPokerBot(BotConfig config, UserRepository userRepository, TeamRepository teamRepository) {
+    public PlanningPokerBot(BotConfig config,
+                            UserRepository userRepository,
+                            TeamRepository teamRepository,
+                            TeamMemberRepository teamMemberRepository) {
         this.config = config;
 
         // Обработчики кнопок бота
-        buttonHandler.put("REGISTER_BUTTON", new RegisterButtonHandler(userRepository));
-
         createTeamButtonHandler = new CreateTeamButtonHandler(teamRepository, userRepository);
         myTeamRenameButtonHandler = new MyTeamRenameButtonHandler(teamRepository);
         myTeamDeleteButtonHandler = new MyTeamDeleteButtonHandler(teamRepository);
+        myTeamGetMemberButtonHandler = new MyTeamGetMemberButtonHandler(teamRepository, teamMemberRepository);
+        myTeamAddMemberButtonHandler = new MyTeamAddMemberButtonHandler(teamRepository, userRepository);
+        myTeamAddMemberStepButtonHandler = new MyTeamAddMemberStepButtonHandler(teamRepository, userRepository);
+        myTeamAddMemberCompleteButtonHandler = new MyTeamAddMemberCompleteButtonHandler(teamRepository,
+                teamMemberRepository,
+                userRepository);
 
-        buttonHandler.put("CREATE_TEAM_BUTTON", createTeamButtonHandler);
+        buttonHandler.put("REGISTER_BUTTON", new RegisterButtonHandler(userRepository));
+        buttonHandler.put(createTeamButtonHandler.getCallbackData(), createTeamButtonHandler);
         buttonHandler.put("TEAM_BUTTON", new TeamButtonHandler());
         buttonHandler.put("MY_TEAMS_BUTTON", new MyTeamsButtonHandler(teamRepository, userRepository));
         buttonHandler.put("MY_TEAM_BUTTON", new MyTeamButtonHandler(teamRepository, userRepository));
-        buttonHandler.put("MY_TEAM_RENAME_BUTTON", myTeamRenameButtonHandler);
-        buttonHandler.put("MY_TEAM_DELETE_BUTTON", myTeamDeleteButtonHandler);
+        buttonHandler.put(myTeamRenameButtonHandler.getCallbackData(), myTeamRenameButtonHandler);
+        buttonHandler.put(myTeamDeleteButtonHandler.getCallbackData(), myTeamDeleteButtonHandler);
+        buttonHandler.put(myTeamGetMemberButtonHandler.getCallbackData(), myTeamGetMemberButtonHandler);
+        buttonHandler.put(myTeamAddMemberButtonHandler.getCallbackData(), myTeamAddMemberButtonHandler);
+        buttonHandler.put(myTeamAddMemberStepButtonHandler.getCallbackData(), myTeamAddMemberStepButtonHandler);
+        buttonHandler.put(myTeamAddMemberCompleteButtonHandler.getCallbackData(), myTeamAddMemberCompleteButtonHandler);
 
         //Добавим список команд для обработки
         registerCommandHandler = new RegisterCommandHandler(userRepository);
@@ -99,6 +116,7 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
                 registerCommandHandler.handleRegistrationStep(update, this);
                 createTeamButtonHandler.handleCreateTeamStep(update, this);
                 myTeamRenameButtonHandler.handleRenameTeamStep(update, this);
+                myTeamDeleteButtonHandler.handleDeleteTeamStep(update, this);
             }
         } else if (update.hasCallbackQuery()) {
             // Обработка кнопок

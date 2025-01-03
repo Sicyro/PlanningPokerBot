@@ -59,6 +59,10 @@ public class MyTeamsButtonHandler implements ButtonHandler {
         // Получим список команд и сформируем кнопки
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         var teams = teamRepository.findByCreatedBy(user);
+
+        // Сортируем по id
+        teams.sort(((team1, team2) -> Long.compare(team1.getId(), team2.getId())));
+
         for (Team team : teams) {
             // Сформируем текст
             stringBuilder

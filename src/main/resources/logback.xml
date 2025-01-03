@@ -15,16 +15,15 @@
     </appender>
 
     <!-- Файловый вывод -->
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/app.log</file>
-        <append>true</append>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logs/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/app-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each archived file, size max 10MB -->
-            <maxFileSize>10MB</maxFileSize>
+            <maxFileSize>5MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
-            <totalSizeCap>1GB</totalSizeCap>
+            <totalSizeCap>10MB</totalSizeCap>
             <!-- 60 days to keep -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>
