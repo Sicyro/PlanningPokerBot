@@ -61,7 +61,7 @@ public class RegisterButtonHandler implements ButtonHandler {
         // Устанавливаем новый текст
         message.setText("Пожалуйста, введите ваше Фамилию и Имя:");
         bot.sendMessage(message);
-        log.info("Пользователь({}({})) начал регистрацию", chatId, user.getUsername());
+        log.info("Пользователь({}) начал регистрацию", chatId);
     }
 
     private User registerUser( long chatId, String userName) {
