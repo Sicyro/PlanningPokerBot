@@ -46,6 +46,14 @@ public class TeamButtonHandler implements ButtonHandler {
     private static List<List<InlineKeyboardButton>> getListsButton() {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
 
+        // Кнопка отображения моих команд
+        List<InlineKeyboardButton> rowInLineCreateTeam = new ArrayList<>();
+        var createTeamButton = new InlineKeyboardButton();
+        createTeamButton.setText("Мои команды");
+        createTeamButton.setCallbackData("MY_TEAMS_BUTTON");
+        rowInLineCreateTeam.add(createTeamButton);
+        rowsInLine.add(rowInLineCreateTeam);
+
         // Кнопка создания команды
         List<InlineKeyboardButton> rowInLineRegister = new ArrayList<>();
         var registerButton = new InlineKeyboardButton();
@@ -54,13 +62,6 @@ public class TeamButtonHandler implements ButtonHandler {
         rowInLineRegister.add(registerButton);
         rowsInLine.add(rowInLineRegister);
 
-        // Кнопка отображения моих команд
-        List<InlineKeyboardButton> rowInLineCreateTeam = new ArrayList<>();
-        var createTeamButton = new InlineKeyboardButton();
-        createTeamButton.setText("Мои команды");
-        createTeamButton.setCallbackData("MY_TEAM_BUTTON");
-        rowInLineCreateTeam.add(createTeamButton);
-        rowsInLine.add(rowInLineCreateTeam);
         return rowsInLine;
     }
 }
