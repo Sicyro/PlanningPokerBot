@@ -6,9 +6,13 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.sicuro.PlanningPokerBot.model.RegistrationState;
+import ru.sicuro.PlanningPokerBot.model.Role;
 import ru.sicuro.PlanningPokerBot.model.User;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.command.StartCommandHandler;
+
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -33,7 +37,16 @@ public class RegisterButtonHandler implements ButtonHandler {
 
         // Проверяем, не зарегистрирован ли пользователь
         var queueUser = userRepository.findByChatId(chatId);
-        User user = queueUser.get();
+        User user;
+        if (queueUser.isEmpty()) {
+            String userName = update.getCallbackQuery().getMessage().getFrom().getUserName();
+
+            // Создаём нового пользователя
+            user = registerUser(chatId, userName);
+        } else {
+            user = queueUser.get();
+        }
+
         var registrationState = user.getRegistrationState();
         if (registrationState != null && registrationState.equals(RegistrationState.REGISTERED)) {
             message.setText("Вы уже зарегистрированы😊!");
@@ -50,4 +63,16 @@ public class RegisterButtonHandler implements ButtonHandler {
         bot.sendMessage(message);
         log.info("Пользователь({}({})) начал регистрацию", chatId, user.getUsername());
     }
+
+    private User registerUser( long chatId, String userName) {
+        // Создаём нового пользователя
+        User newUser = User.createUser(chatId, userName);
+
+        // Сохраняем пользователя в базу данных
+        userRepository.save(newUser);
+        log.info("Новый пользователь зарегистрирован (перед регистрацие): {}", newUser);
+
+        return newUser;
+    }
+
 }

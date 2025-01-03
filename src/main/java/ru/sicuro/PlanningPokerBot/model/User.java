@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "pp_user")
 @Data
+@Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -37,5 +39,16 @@ public class User {
         } else {
             return fullName;
         }
+    }
+
+    public static User createUser(long chatId, String userName) {
+        // Создаём нового пользователя
+        User newUser = new User();
+        newUser.setChatId(chatId);
+        newUser.setUsername("@" + userName);
+        newUser.setRole(Role.GUEST); // По умолчанию роль "GUEST"
+        newUser.setCreatedAt(LocalDateTime.now());
+
+        return newUser;
     }
 }

@@ -54,11 +54,7 @@ public class StartCommandHandler implements CommandHandler {
         }
 
         // Создаём нового пользователя
-        User newUser = new User();
-        newUser.setChatId(chatId);
-        newUser.setUsername("@" + userName);
-        newUser.setRole(Role.GUEST); // По умолчанию роль "GUEST"
-        newUser.setCreatedAt(LocalDateTime.now());
+        User newUser = User.createUser(chatId, userName);
 
         // Сохраняем пользователя в базу данных
         userRepository.save(newUser);
