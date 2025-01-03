@@ -31,16 +31,22 @@ public class MenuCommandHandler implements CommandHandler {
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-        List<InlineKeyboardButton> rowInLine = new ArrayList<>();
 
         // Кнопка регистрации
+        List<InlineKeyboardButton> rowInLineRegister = new ArrayList<>();
         var registerButton = new InlineKeyboardButton();
         registerButton.setText("Регистрация");
         registerButton.setCallbackData("REGISTER_BUTTON");
-        rowInLine.add(registerButton);
+        rowInLineRegister.add(registerButton);
+        rowsInLine.add(rowInLineRegister);
 
-        // Добавляем линию кнопок
-        rowsInLine.add(rowInLine);
+        // Кнопка создания команды
+        List<InlineKeyboardButton> rowInLineCreateTeam = new ArrayList<>();
+        var createTeamButton = new InlineKeyboardButton();
+        createTeamButton.setText("Создать команду");
+        createTeamButton.setCallbackData("CREATE_TEAM_BUTTON");
+        rowInLineCreateTeam.add(createTeamButton);
+        rowsInLine.add(rowInLineCreateTeam);
 
         // Добавляем кнопки
         markup.setKeyboard(rowsInLine);

@@ -20,6 +20,7 @@ import ru.sicuro.PlanningPokerBot.model.Role;
 import ru.sicuro.PlanningPokerBot.model.User;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
+import ru.sicuro.PlanningPokerBot.service.button.CreateTeamButtonHandler;
 import ru.sicuro.PlanningPokerBot.service.button.RegisterButtonHandler;
 import ru.sicuro.PlanningPokerBot.service.command.*;
 
@@ -31,31 +32,37 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@Getter
 @Component
 public class PlanningPokerBot extends TelegramLongPollingBot {
 
     private final BotConfig config;
-    private final UserRepository userRepository;
 
     // Команды бота
     private final Map<String, CommandHandler> commandHandlers = new HashMap<>();
     private final RegisterCommandHandler registerCommandHandler;
 
     // Кнопки бота
+    @Getter
     private final Map<String, ButtonHandler> buttonHandler = new HashMap<>();
+    private final CreateTeamButtonHandler createTeamButtonHandler;
 
+    /**
+     * @param config - Конфигурация бота
+     * @param userRepository - Класс для работы с БД, таблица пользователи
+     */
     public PlanningPokerBot(BotConfig config, UserRepository userRepository) {
         this.config = config;
-        this.userRepository = userRepository;
 
         // Обработчики кнопок бота
-        buttonHandler.put("REGISTER_BUTTON", new RegisterButtonHandler(this.userRepository));
+        buttonHandler.put("REGISTER_BUTTON", new RegisterButtonHandler(userRepository));
+
+        createTeamButtonHandler = new CreateTeamButtonHandler(userRepository);
+        buttonHandler.put("CREATE_TEAM_BUTTON", createTeamButtonHandler);
 
         //Добавим список команд для обработки
-        registerCommandHandler = new RegisterCommandHandler(this.userRepository);
+        registerCommandHandler = new RegisterCommandHandler(userRepository);
 
-        commandHandlers.put("/start", new StartCommandHandler(this.userRepository));
+        commandHandlers.put("/start", new StartCommandHandler(userRepository));
         commandHandlers.put("/help", new HelpCommandHandler());
         commandHandlers.put("/menu", new MenuCommandHandler());
         commandHandlers.put(registerCommandHandler.getCommandName(), registerCommandHandler);
@@ -129,4 +136,5 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return config.getToken();
     }
+
 }
