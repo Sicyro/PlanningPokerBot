@@ -6,11 +6,10 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.sicuro.PlanningPokerBot.model.RegistrationState;
-import ru.sicuro.PlanningPokerBot.model.Role;
 import ru.sicuro.PlanningPokerBot.model.User;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
-import ru.sicuro.PlanningPokerBot.service.command.StartCommandHandler;
+import ru.sicuro.PlanningPokerBot.service.UserState;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +17,7 @@ import java.time.LocalDateTime;
 @Service
 @AllArgsConstructor
 public class RegisterButtonHandler implements ButtonHandler {
+
     private final UserRepository userRepository;
 
     @Override
@@ -62,6 +62,7 @@ public class RegisterButtonHandler implements ButtonHandler {
         message.setText("Пожалуйста, введите ваше Фамилию и Имя:");
         bot.sendMessage(message);
         log.info("Пользователь({}) начал регистрацию", chatId);
+        bot.setUserState(chatId, UserState.REGISTRATION_WAITING_FOR_NAME);
     }
 
     private User registerUser( long chatId, String userName) {

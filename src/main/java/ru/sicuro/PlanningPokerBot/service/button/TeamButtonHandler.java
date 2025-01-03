@@ -1,8 +1,9 @@
-package ru.sicuro.PlanningPokerBot.service.command;
+package ru.sicuro.PlanningPokerBot.service.button;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -13,24 +14,24 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MenuCommandHandler implements CommandHandler {
+@AllArgsConstructor
+public class TeamButtonHandler implements ButtonHandler {
 
     @Override
-    public String getCommandName() {
-        return "/menu";
+    public String getCallbackData() {
+        return "TEAM_BUTTON";
     }
 
     @Override
     public void handle(Update update, PlanningPokerBot bot) {
-        long chatId = update.getMessage().getChatId();
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
+        int messageId = update.getCallbackQuery().getMessage().getMessageId();
 
-        // Сбросим статус
-        bot.deleteUserState(chatId);
-
-        // Формируем ответное сообщение
-        SendMessage message = new SendMessage();
+        // Класс для работы с текстом которы был уже передан
+        EditMessageText message = new EditMessageText();
         message.setChatId(chatId);
-        message.setText("Доступные команды меню:");
+        message.setMessageId(messageId);
+        message.setText("Управление командами:");
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = getListsButton();
@@ -45,22 +46,21 @@ public class MenuCommandHandler implements CommandHandler {
     private static List<List<InlineKeyboardButton>> getListsButton() {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
 
-        // Кнопка регистрации
+        // Кнопка создания команды
         List<InlineKeyboardButton> rowInLineRegister = new ArrayList<>();
         var registerButton = new InlineKeyboardButton();
-        registerButton.setText("Регистрация");
-        registerButton.setCallbackData("REGISTER_BUTTON");
+        registerButton.setText("Создать команду");
+        registerButton.setCallbackData("CREATE_TEAM_BUTTON");
         rowInLineRegister.add(registerButton);
         rowsInLine.add(rowInLineRegister);
 
-        // Кнопка создания команды
+        // Кнопка отображения моих команд
         List<InlineKeyboardButton> rowInLineCreateTeam = new ArrayList<>();
         var createTeamButton = new InlineKeyboardButton();
-        createTeamButton.setText("Команды");
-        createTeamButton.setCallbackData("TEAM_BUTTON");
+        createTeamButton.setText("Мои команды");
+        createTeamButton.setCallbackData("MY_TEAM_BUTTON");
         rowInLineCreateTeam.add(createTeamButton);
         rowsInLine.add(rowInLineCreateTeam);
-
         return rowsInLine;
     }
 }

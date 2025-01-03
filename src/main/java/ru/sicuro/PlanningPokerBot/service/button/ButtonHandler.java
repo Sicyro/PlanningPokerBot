@@ -8,4 +8,5 @@ public interface ButtonHandler {
     String getCallbackData();
 
     void handle(Update update, PlanningPokerBot bot);
+
 }

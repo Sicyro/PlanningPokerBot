@@ -18,6 +18,8 @@ public class HelpCommandHandler  implements CommandHandler{
         long chatId = update.getMessage().getChatId();
 
         String helpMessage = """
+            ⚡ Добро пожаловать в бота покерного планировани!
+            
             Доступные команды:
             
             /start - Начать взаимодействие

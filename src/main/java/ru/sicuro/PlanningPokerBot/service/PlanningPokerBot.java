@@ -18,10 +18,9 @@ import ru.sicuro.PlanningPokerBot.config.BotConfig;
 import ru.sicuro.PlanningPokerBot.model.RegistrationState;
 import ru.sicuro.PlanningPokerBot.model.Role;
 import ru.sicuro.PlanningPokerBot.model.User;
+import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
-import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
-import ru.sicuro.PlanningPokerBot.service.button.CreateTeamButtonHandler;
-import ru.sicuro.PlanningPokerBot.service.button.RegisterButtonHandler;
+import ru.sicuro.PlanningPokerBot.service.button.*;
 import ru.sicuro.PlanningPokerBot.service.command.*;
 
 import java.time.LocalDateTime;
@@ -37,6 +36,10 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
 
     private final BotConfig config;
 
+    // Состояние пользователя
+    // Переменная необходима для определия действия пользователя
+    private final Map<Long, UserState> userStates = new ConcurrentHashMap<>();
+
     // Команды бота
     private final Map<String, CommandHandler> commandHandlers = new HashMap<>();
     private final RegisterCommandHandler registerCommandHandler;
@@ -47,17 +50,19 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
     private final CreateTeamButtonHandler createTeamButtonHandler;
 
     /**
-     * @param config - Конфигурация бота
-     * @param userRepository - Класс для работы с БД, таблица пользователи
+     * @param config Конфигурация бота
+     * @param userRepository Класс для работы с БД, таблица пользователи
      */
-    public PlanningPokerBot(BotConfig config, UserRepository userRepository) {
+    public PlanningPokerBot(BotConfig config, UserRepository userRepository, TeamRepository teamRepository) {
         this.config = config;
 
         // Обработчики кнопок бота
         buttonHandler.put("REGISTER_BUTTON", new RegisterButtonHandler(userRepository));
 
-        createTeamButtonHandler = new CreateTeamButtonHandler(userRepository);
+        createTeamButtonHandler = new CreateTeamButtonHandler(teamRepository, userRepository);
         buttonHandler.put("CREATE_TEAM_BUTTON", createTeamButtonHandler);
+        buttonHandler.put("TEAM_BUTTON", new TeamButtonHandler());
+        buttonHandler.put("MY_TEAM_BUTTON", new MyTeamButtonHandler(teamRepository, userRepository));
 
         //Добавим список команд для обработки
         registerCommandHandler = new RegisterCommandHandler(userRepository);
@@ -91,6 +96,7 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
                 handler.handle(update, this);
             } else {
                 registerCommandHandler.handleRegistrationStep(update, this);
+                createTeamButtonHandler.handleCreateTeamStep(update, this);
             }
         } else if (update.hasCallbackQuery()) {
             // Обработка кнопок
@@ -137,4 +143,19 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         return config.getToken();
     }
 
+    public UserState getUserState(Long chatId) {
+        return userStates.get(chatId);
+    }
+
+    // Устанавливаем статус пользователя
+    public void setUserState(long chatId, UserState state) {
+        log.debug("Пользователю({}) установили статус \"{}\"", chatId, state);
+        userStates.put(chatId, state);
+    }
+
+    // Удаляем статус пользователя
+    public void deleteUserState(long chatId) {
+        log.debug("Пользователю({}) очистили статус", chatId);
+        userStates.remove(chatId);
+    }
 }
