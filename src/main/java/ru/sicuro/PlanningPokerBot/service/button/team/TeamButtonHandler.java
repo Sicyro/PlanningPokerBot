@@ -32,7 +32,7 @@ public class TeamButtonHandler implements ButtonHandler {
         EditMessageText message = new EditMessageText();
         message.setChatId(chatId);
         message.setMessageId(messageId);
-        message.setText("Управление командами:");
+        message.setText("⚔️Управление командами:");
 
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = getListsButton();

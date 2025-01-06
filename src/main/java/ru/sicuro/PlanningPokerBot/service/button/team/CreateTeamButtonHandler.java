@@ -10,13 +10,14 @@ import ru.sicuro.PlanningPokerBot.model.User;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.StepHandler;
 import ru.sicuro.PlanningPokerBot.service.UserState;
 import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
 
 @Slf4j
 @Service
 @AllArgsConstructor
-public class CreateTeamButtonHandler implements ButtonHandler {
+public class CreateTeamButtonHandler implements ButtonHandler, StepHandler {
 
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
@@ -42,7 +43,8 @@ public class CreateTeamButtonHandler implements ButtonHandler {
         bot.setUserState(chatId, UserState.TEAM_WAITING_FOR_NAME);
     }
 
-    public void handleCreateTeamStep(Update update, PlanningPokerBot bot) {
+    @Override
+    public void handleStep(Update update, PlanningPokerBot bot) {
         long chatId = update.getMessage().getChatId();
         String messageText = update.getMessage().getText();
 

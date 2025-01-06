@@ -45,21 +45,29 @@ public class MenuCommandHandler implements CommandHandler {
     private static List<List<InlineKeyboardButton>> getListsButton() {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
 
-        // Кнопка создания команды
-        List<InlineKeyboardButton> rowInLineCreateTeam = new ArrayList<>();
-        var createTeamButton = new InlineKeyboardButton();
-        createTeamButton.setText("Команды");
-        createTeamButton.setCallbackData("TEAM_BUTTON");
-        rowInLineCreateTeam.add(createTeamButton);
-        rowsInLine.add(rowInLineCreateTeam);
+        // Кнопка управления командами
+        List<InlineKeyboardButton> rowInLine = new ArrayList<>();
+        var button = new InlineKeyboardButton();
+        button.setText("⚔️Команды");
+        button.setCallbackData("TEAM_BUTTON");
+        rowInLine.add(button);
+        rowsInLine.add(rowInLine);
+
+        // Кнопка управления задачами
+        rowInLine = new ArrayList<>();
+        button = new InlineKeyboardButton();
+        button.setText("🎯Задачи");
+        button.setCallbackData("TASK_BUTTON");
+        rowInLine.add(button);
+        rowsInLine.add(rowInLine);
 
         // Кнопка регистрации
-        List<InlineKeyboardButton> rowInLineRegister = new ArrayList<>();
-        var registerButton = new InlineKeyboardButton();
-        registerButton.setText("Регистрация");
-        registerButton.setCallbackData("REGISTER_BUTTON");
-        rowInLineRegister.add(registerButton);
-        rowsInLine.add(rowInLineRegister);
+        rowInLine = new ArrayList<>();
+        button = new InlineKeyboardButton();
+        button.setText("Регистрация");
+        button.setCallbackData("REGISTER_BUTTON");
+        rowInLine.add(button);
+        rowsInLine.add(rowInLine);
 
 
         return rowsInLine;

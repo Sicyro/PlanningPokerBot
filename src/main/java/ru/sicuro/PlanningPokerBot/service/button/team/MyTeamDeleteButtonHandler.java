@@ -9,6 +9,7 @@ import ru.sicuro.PlanningPokerBot.model.Team;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.StepHandler;
 import ru.sicuro.PlanningPokerBot.service.UserState;
 import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class MyTeamDeleteButtonHandler implements ButtonHandler {
+public class MyTeamDeleteButtonHandler implements ButtonHandler, StepHandler {
 
     private static final Map<Long, Team> deleteTeam = new ConcurrentHashMap<>();
     private final TeamRepository teamRepository;
@@ -61,7 +62,8 @@ public class MyTeamDeleteButtonHandler implements ButtonHandler {
 
     }
 
-    public void handleDeleteTeamStep(Update update, PlanningPokerBot bot) {
+    @Override
+    public void handleStep(Update update, PlanningPokerBot bot) {
         long chatId = update.getMessage().getChatId();
         String messageText = update.getMessage().getText();
 

@@ -9,6 +9,7 @@ import ru.sicuro.PlanningPokerBot.model.Role;
 import ru.sicuro.PlanningPokerBot.model.User;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.StepHandler;
 import ru.sicuro.PlanningPokerBot.service.UserState;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class RegisterCommandHandler implements CommandHandler {
+public class RegisterCommandHandler implements CommandHandler, StepHandler {
     private final UserRepository userRepository;
 
     @Override
@@ -57,7 +58,7 @@ public class RegisterCommandHandler implements CommandHandler {
         log.info("Пользователь({}({})) начал регистрацию", chatId, user.getUsername());
     }
 
-    public void handleRegistrationStep(Update update, PlanningPokerBot bot) {
+    public void handleStep(Update update, PlanningPokerBot bot) {
         long chatId = update.getMessage().getChatId();
         String messageText = update.getMessage().getText();
 

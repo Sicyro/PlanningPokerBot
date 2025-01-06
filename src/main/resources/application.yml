@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/planning_poker
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/planning_poker"
     username: postgres
     password: postgres
   jpa:
@@ -10,6 +10,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
 bot:
   name: "PlanningPokerBot"
   token: "${BOT_TOKEN}"

@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.sicuro.PlanningPokerBot.model.Team;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.StepHandler;
 import ru.sicuro.PlanningPokerBot.service.UserState;
 import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
 
@@ -17,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class MyTeamRenameButtonHandler implements ButtonHandler {
+public class MyTeamRenameButtonHandler implements ButtonHandler, StepHandler {
     private static final Map<Long, Team> renameTeam = new ConcurrentHashMap<>();
     private final TeamRepository teamRepository;
 
@@ -57,7 +58,8 @@ public class MyTeamRenameButtonHandler implements ButtonHandler {
 
     }
 
-    public void handleRenameTeamStep(Update update, PlanningPokerBot bot) {
+    @Override
+    public void handleStep(Update update, PlanningPokerBot bot) {
         long chatId = update.getMessage().getChatId();
         String messageText = update.getMessage().getText();
 
