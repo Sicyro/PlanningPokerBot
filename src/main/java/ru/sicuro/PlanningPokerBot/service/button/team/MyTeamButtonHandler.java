@@ -3,6 +3,7 @@ package ru.sicuro.PlanningPokerBot.service.button.team;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -57,15 +58,15 @@ public class MyTeamButtonHandler implements ButtonHandler {
 
         // Строка вывода
         String text = String.format("""
-                Команда: ⚔️ %s
+                Команда: ⚔️%s
                 
-                Дата создания: %s
-                Количество участников: %d
+                📅Дата создания: %s
+                👨‍👩‍👧‍👦Количество участников: %d
                
                 Выберите действие над командой:
                 """,
                 team.getName(),
-                team.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                team.getCreatedAt().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                 teamMembers.size());
 
         message.setText(text);
