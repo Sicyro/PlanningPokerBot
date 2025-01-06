@@ -32,7 +32,7 @@ public class RegisterCommandHandler implements CommandHandler {
         var queueUser = userRepository.findByChatId(chatId);
         User user;
         if (queueUser.isEmpty()) {
-            String userName = update.getCallbackQuery().getMessage().getFrom().getUserName();
+            String userName = update.getMessage().getChat().getUserName();
 
             // Создаём нового пользователя
             user = registerUser(chatId, userName);
@@ -53,7 +53,7 @@ public class RegisterCommandHandler implements CommandHandler {
         // Установим статус регистрации
         bot.setUserState(chatId, UserState.REGISTRATION_WAITING_FOR_NAME);
 
-        bot.sendMessage(chatId, "Пожалуйста, введите ваше Фамилию и Имя:");
+        bot.sendMessage(chatId, "Пожалуйста, введите вашу Фамилию и Имя:");
         log.info("Пользователь({}({})) начал регистрацию", chatId, user.getUsername());
     }
 

@@ -1,4 +1,4 @@
-package ru.sicuro.PlanningPokerBot.service.button;
+package ru.sicuro.PlanningPokerBot.service.button.team;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,9 +8,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.sicuro.PlanningPokerBot.model.Team;
+import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
-import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.List;
 public class MyTeamButtonHandler implements ButtonHandler {
 
     private final TeamRepository teamRepository;
-    private final UserRepository userRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
     @Override
     public String getCallbackData() {
@@ -51,17 +52,21 @@ public class MyTeamButtonHandler implements ButtonHandler {
             team = optionalTeam.get();
         }
 
+        // Количество участников в команде
+        var teamMembers = teamMemberRepository.findByTeam(team);
+
         // Строка вывода
         String text = String.format("""
                 Команда: ⚔️ %s
                 
                 Дата создания: %s
-                Колличество участников: 0
+                Количество участников: %d
                
-                Выбирете действие над командой:
+                Выберите действие над командой:
                 """,
                 team.getName(),
-                team.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                team.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                teamMembers.size());
 
         message.setText(text);
 

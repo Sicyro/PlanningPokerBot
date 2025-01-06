@@ -12,6 +12,6 @@ spring:
         format_sql: true
 bot:
   name: "PlanningPokerBot"
-  token: "${BOT_TOKEN:7970514385:AAHHJpDSiYrT7EdSzdf1tFm-zOO0luwFe0s}"
+  token: "${BOT_TOKEN}"
 logging:
   config: "classpath:logback.xml"

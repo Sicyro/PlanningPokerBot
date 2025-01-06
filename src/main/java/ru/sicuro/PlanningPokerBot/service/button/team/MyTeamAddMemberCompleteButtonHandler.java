@@ -1,4 +1,4 @@
-package ru.sicuro.PlanningPokerBot.service.button;
+package ru.sicuro.PlanningPokerBot.service.button.team;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,7 @@ import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
 
 @Slf4j
 @Service
@@ -76,7 +77,7 @@ public class MyTeamAddMemberCompleteButtonHandler implements ButtonHandler {
             message.setText("✅Приглашение принято!");
         }
 
-        // Получаем списко участников
+        // Получаем список участников
         var teamMembers = teamMemberRepository.findByTeam(team);
 
         // Добавим пользователя в команду

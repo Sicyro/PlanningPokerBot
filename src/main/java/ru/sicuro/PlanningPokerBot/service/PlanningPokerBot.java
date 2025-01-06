@@ -16,6 +16,7 @@ import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.button.*;
+import ru.sicuro.PlanningPokerBot.service.button.team.*;
 import ru.sicuro.PlanningPokerBot.service.command.*;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         buttonHandler.put(createTeamButtonHandler.getCallbackData(), createTeamButtonHandler);
         buttonHandler.put("TEAM_BUTTON", new TeamButtonHandler());
         buttonHandler.put("MY_TEAMS_BUTTON", new MyTeamsButtonHandler(teamRepository, userRepository));
-        buttonHandler.put("MY_TEAM_BUTTON", new MyTeamButtonHandler(teamRepository, userRepository));
+        buttonHandler.put("MY_TEAM_BUTTON", new MyTeamButtonHandler(teamRepository, teamMemberRepository));
         buttonHandler.put(myTeamRenameButtonHandler.getCallbackData(), myTeamRenameButtonHandler);
         buttonHandler.put(myTeamDeleteButtonHandler.getCallbackData(), myTeamDeleteButtonHandler);
         buttonHandler.put(myTeamGetMemberButtonHandler.getCallbackData(), myTeamGetMemberButtonHandler);

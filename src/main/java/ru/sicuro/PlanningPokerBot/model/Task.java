@@ -25,8 +25,8 @@ public class Task {
 
     private String description;
     private String status = "pending"; // 'pending', 'completed'
-    private Integer finalEstimate;
     private String link;
+    private Integer finalEstimate;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 

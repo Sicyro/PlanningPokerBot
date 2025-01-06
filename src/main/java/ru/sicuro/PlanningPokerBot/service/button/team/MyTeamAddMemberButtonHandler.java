@@ -1,4 +1,4 @@
-package ru.sicuro.PlanningPokerBot.service.button;
+package ru.sicuro.PlanningPokerBot.service.button.team;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,7 @@ import ru.sicuro.PlanningPokerBot.model.User;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,13 @@ public class MyTeamAddMemberButtonHandler implements ButtonHandler {
 
         // Сформируем кнопки для приглашения пользователей
         message.setText("Выберите пользователей для добавления в команду:");
+        InlineKeyboardMarkup markup = getInlineKeyboardMarkup(users, team);
+        message.setReplyMarkup(markup);
+
+        bot.sendMessage(message);
+    }
+
+    private static InlineKeyboardMarkup getInlineKeyboardMarkup(List<User> users, Team team) {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         for (User user1 : users) {
             // Сформируем кнопки
@@ -83,8 +91,6 @@ public class MyTeamAddMemberButtonHandler implements ButtonHandler {
         // Установим кнопки
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
         markup.setKeyboard(rowsInLine);
-        message.setReplyMarkup(markup);
-
-        bot.sendMessage(message);
+        return markup;
     }
 }

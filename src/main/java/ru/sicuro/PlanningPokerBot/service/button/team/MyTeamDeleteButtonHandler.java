@@ -1,4 +1,4 @@
-package ru.sicuro.PlanningPokerBot.service.button;
+package ru.sicuro.PlanningPokerBot.service.button.team;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,7 @@ import ru.sicuro.PlanningPokerBot.model.Team;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
 import ru.sicuro.PlanningPokerBot.service.UserState;
+import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,13 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class MyTeamRenameButtonHandler implements ButtonHandler {
-    private static final Map<Long, Team> renameTeam = new ConcurrentHashMap<>();
+public class MyTeamDeleteButtonHandler implements ButtonHandler {
+    private static final Map<Long, Team> deleteTeam = new ConcurrentHashMap<>();
     private final TeamRepository teamRepository;
 
     @Override
     public String getCallbackData() {
-        return "MY_TEAM_RENAME_BUTTON";
+        return "MY_TEAM_DELETE_BUTTON";
     }
 
     @Override
@@ -36,7 +37,6 @@ public class MyTeamRenameButtonHandler implements ButtonHandler {
         EditMessageText message = new EditMessageText();
         message.setChatId(chatId);
         message.setMessageId(messageId);
-        message.setText("Введите новое название команды:");
 
         // Получим данные для работы с командой
         var optionalTeam = teamRepository.findById(Long.valueOf(teamId));
@@ -48,15 +48,17 @@ public class MyTeamRenameButtonHandler implements ButtonHandler {
             team = optionalTeam.get();
         }
 
-        renameTeam.put(chatId, team);
-
+        message.setText(
+                String.format("Для подтверждения удаления введите название команды (%s)",
+                        team.getName()));
+        deleteTeam.put(chatId, team);
         bot.sendMessage(message);
-        log.info("Пользователь({}) начал переименовывание команды", chatId);
-        bot.setUserState(chatId, UserState.TEAM_WAITING_FOR_NEW_NAME);
+        log.info("Пользователь({}) начал удаление команды", chatId);
+        bot.setUserState(chatId, UserState.TEAM_WAITING_DELETE);
 
     }
 
-    public void handleRenameTeamStep(Update update, PlanningPokerBot bot) {
+    public void handleDeleteTeamStep(Update update, PlanningPokerBot bot) {
         long chatId = update.getMessage().getChatId();
         String messageText = update.getMessage().getText();
 
@@ -67,17 +69,23 @@ public class MyTeamRenameButtonHandler implements ButtonHandler {
             return;
         }
 
-        if (!UserState.TEAM_WAITING_FOR_NEW_NAME.equals(state)) {
+        if (!UserState.TEAM_WAITING_DELETE.equals(state)) {
             return;
         }
 
         // Получим команду
-        Team team = renameTeam.remove(chatId);
-        team.setName(messageText);
-        teamRepository.save(team);
+        Team team = deleteTeam.remove(chatId);
 
-        log.info("Команда переименована: {}", team);
-        bot.sendMessage(chatId, "Команда переименована! \n" +
+        if (!team.getName().equals(messageText)) {
+            bot.sendMessage(chatId, "Введено не корректное имя команды!");
+            bot.deleteUserState(chatId);
+            return;
+        }
+
+        teamRepository.delete(team);
+
+        log.info("Команда удалена: {}", team);
+        bot.sendMessage(chatId, "Команда удалена! \n" +
                 "Посмотреть список команд можно в меню команд \"Мои команды\"");
         bot.deleteUserState(chatId);
     }
