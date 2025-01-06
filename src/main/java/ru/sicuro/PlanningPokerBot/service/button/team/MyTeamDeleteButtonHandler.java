@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.sicuro.PlanningPokerBot.model.Team;
+import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
 import ru.sicuro.PlanningPokerBot.service.UserState;
@@ -18,8 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @AllArgsConstructor
 public class MyTeamDeleteButtonHandler implements ButtonHandler {
+
     private static final Map<Long, Team> deleteTeam = new ConcurrentHashMap<>();
     private final TeamRepository teamRepository;
+    private final TeamMemberRepository teamMemberRepository;
 
     @Override
     public String getCallbackData() {
@@ -82,6 +85,9 @@ public class MyTeamDeleteButtonHandler implements ButtonHandler {
             return;
         }
 
+        // Удалим данные об участниках
+        teamMemberRepository.deleteByTeam(team);
+        // Удалим команду
         teamRepository.delete(team);
 
         log.info("Команда удалена: {}", team);
