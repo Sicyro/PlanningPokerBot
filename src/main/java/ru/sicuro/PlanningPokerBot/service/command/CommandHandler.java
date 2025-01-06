@@ -1,12 +1,10 @@
 package ru.sicuro.PlanningPokerBot.service.command;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.Handler;
 
-public interface CommandHandler {
+public interface CommandHandler extends Handler {
 
     /**Возвращает имя команды*/
     String getCommandName();
 
-    void handle(Update update, PlanningPokerBot bot);
 }

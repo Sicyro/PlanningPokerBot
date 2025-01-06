@@ -1,12 +1,9 @@
 package ru.sicuro.PlanningPokerBot.service.button;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
+import ru.sicuro.PlanningPokerBot.service.Handler;
 
-public interface ButtonHandler {
+public interface ButtonHandler extends Handler {
 
     String getCallbackData();
-
-    void handle(Update update, PlanningPokerBot bot);
 
 }
