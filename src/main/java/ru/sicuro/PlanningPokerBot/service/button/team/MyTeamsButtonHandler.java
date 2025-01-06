@@ -47,15 +47,7 @@ public class MyTeamsButtonHandler implements ButtonHandler {
                 .append("\n");
 
         // Получим пользователя
-        var queueUser = userRepository.findByChatId(chatId);
-        User user;
-        if (queueUser.isPresent()) {
-            user = queueUser.get();
-        } else {
-            log.warn("Пользователь не найден!");
-            bot.sendMessage(chatId,"❗Пользователь не найден! Попробуйте зарегистрироваться заново используя команду /register");
-            return;
-        }
+        User user = userRepository.findByChatId(chatId).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
 
         // Получим список команд и сформируем кнопки
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();

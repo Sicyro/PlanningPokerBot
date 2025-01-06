@@ -38,24 +38,10 @@ public class MyTeamAddMemberStepButtonHandler implements ButtonHandler {
         String teamId = callbackQuery.split(" ")[2];
 
         // Получим данные для работы с командой
-        var optionalTeam = teamRepository.findById(Long.valueOf(teamId));
-        Team team;
-        if (optionalTeam.isEmpty()) {
-            log.warn("Команда не найдена по id {}", teamId);
-            return;
-        } else {
-            team = optionalTeam.get();
-        }
+        Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена!"));
 
         // Данные пользователя
-        var optionalUser = userRepository.findById(Long.valueOf(userId));
-        User user;
-        if (optionalUser.isEmpty()) {
-            log.warn("Пользователь не найден по chatId {}!", chatId);
-            return;
-        } else {
-            user = optionalUser.get();
-        }
+        User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден!"));
 
         String text = String.format("""
                 ⚡Вас приглашают в команду ⚔️%s

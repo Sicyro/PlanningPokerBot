@@ -41,14 +41,7 @@ public class MyTeamRenameButtonHandler implements ButtonHandler, StepHandler {
         message.setText("Введите новое название команды:");
 
         // Получим данные для работы с командой
-        var optionalTeam = teamRepository.findById(Long.valueOf(teamId));
-        Team team;
-        if (optionalTeam.isEmpty()) {
-            log.warn("Команда не найдена по id {}", teamId);
-            return;
-        } else {
-            team = optionalTeam.get();
-        }
+        Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена"));
 
         renameTeam.put(chatId, team);
 

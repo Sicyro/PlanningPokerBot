@@ -43,24 +43,10 @@ public class MyTeamAddMemberButtonHandler implements ButtonHandler {
         message.setMessageId(messageId);
 
         // Получим данные для работы с командой
-        var optionalTeam = teamRepository.findById(Long.valueOf(teamId));
-        Team team;
-        if (optionalTeam.isEmpty()) {
-            log.warn("Команда не найдена по id {}", teamId);
-            return;
-        } else {
-            team = optionalTeam.get();
-        }
+        Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена!"));
 
         // Данные пользователя
-        var optionalUser = userRepository.findByChatId(chatId);
-        User user;
-        if (optionalUser.isEmpty()) {
-            log.warn("Пользователь не найден по chatId {}!", chatId);
-            return;
-        } else {
-            user = optionalUser.get();
-        }
+        User user = userRepository.findById(chatId).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден!"));
 
         // Получим список пользователей не в команде
         var users = userRepository.findUsersNotInTeamAndNotCurrentUser(team, user);

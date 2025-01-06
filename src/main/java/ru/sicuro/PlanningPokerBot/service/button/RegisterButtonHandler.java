@@ -71,7 +71,7 @@ public class RegisterButtonHandler implements ButtonHandler {
 
         // Сохраняем пользователя в базу данных
         userRepository.save(newUser);
-        log.info("Новый пользователь зарегистрирован (перед регистрацие): {}", newUser);
+        log.info("Новый пользователь зарегистрирован (перед регистрацией): {}", newUser);
 
         return newUser;
     }

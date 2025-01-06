@@ -43,14 +43,7 @@ public class MyTeamDeleteButtonHandler implements ButtonHandler, StepHandler {
         message.setMessageId(messageId);
 
         // Получим данные для работы с командой
-        var optionalTeam = teamRepository.findById(Long.valueOf(teamId));
-        Team team;
-        if (optionalTeam.isEmpty()) {
-            log.warn("Команда не найдена по id {}", teamId);
-            return;
-        } else {
-            team = optionalTeam.get();
-        }
+        Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена"));
 
         message.setText(
                 String.format("Для подтверждения удаления введите название команды (%s)",
