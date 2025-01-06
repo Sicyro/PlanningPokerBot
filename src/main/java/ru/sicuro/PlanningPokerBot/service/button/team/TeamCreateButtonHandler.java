@@ -17,7 +17,7 @@ import ru.sicuro.PlanningPokerBot.service.button.ButtonHandler;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class CreateTeamButtonHandler implements ButtonHandler, StepHandler {
+public class TeamCreateButtonHandler implements ButtonHandler, StepHandler {
 
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;

@@ -59,7 +59,7 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         this.config = config;
 
         // Обработчики кнопок бота
-        CreateTeamButtonHandler createTeamButtonHandler = new CreateTeamButtonHandler(teamRepository, userRepository);
+        TeamCreateButtonHandler createTeamButtonHandler = new TeamCreateButtonHandler(teamRepository, userRepository);
         MyTeamRenameButtonHandler myTeamRenameButtonHandler = new MyTeamRenameButtonHandler(teamRepository);
         MyTeamDeleteButtonHandler myTeamDeleteButtonHandler = new MyTeamDeleteButtonHandler(teamRepository, teamMemberRepository);
         TaskAddStepButtonHandler taskAddStepButtonHandler = new TaskAddStepButtonHandler(teamRepository,
