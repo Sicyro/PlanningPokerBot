@@ -63,7 +63,7 @@ public class MyTeamAddMemberButtonHandler implements ButtonHandler {
         }
 
         // Получим список пользователей не в команде
-        var users = userRepository.findUsersNotInTeamAndNotCurrentUser(team.getId(), user.getId());
+        var users = userRepository.findUsersNotInTeamAndNotCurrentUser(team, user);
 
         // Сформируем кнопки для приглашения пользователей
         message.setText("Выберите пользователей для добавления в команду:");
