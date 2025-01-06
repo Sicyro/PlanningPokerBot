@@ -17,9 +17,7 @@ import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.button.*;
-import ru.sicuro.PlanningPokerBot.service.button.task.TaskAddButtonHandler;
-import ru.sicuro.PlanningPokerBot.service.button.task.TaskAddStepButtonHandler;
-import ru.sicuro.PlanningPokerBot.service.button.task.TaskButtonHandler;
+import ru.sicuro.PlanningPokerBot.service.button.task.*;
 import ru.sicuro.PlanningPokerBot.service.button.team.*;
 import ru.sicuro.PlanningPokerBot.service.command.*;
 
@@ -61,7 +59,8 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         // Обработчики кнопок бота
         TeamCreateButtonHandler createTeamButtonHandler = new TeamCreateButtonHandler(teamRepository, userRepository);
         MyTeamRenameButtonHandler myTeamRenameButtonHandler = new MyTeamRenameButtonHandler(teamRepository);
-        MyTeamDeleteButtonHandler myTeamDeleteButtonHandler = new MyTeamDeleteButtonHandler(teamRepository, teamMemberRepository);
+        MyTeamDeleteButtonHandler myTeamDeleteButtonHandler = new MyTeamDeleteButtonHandler(teamRepository,
+                teamMemberRepository);
         TaskAddStepButtonHandler taskAddStepButtonHandler = new TaskAddStepButtonHandler(teamRepository,
                 userRepository,
                 taskRepository);
@@ -74,7 +73,8 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         buttonHandler.put("MY_TEAM_BUTTON", new MyTeamButtonHandler(teamRepository, teamMemberRepository));
         buttonHandler.put(myTeamRenameButtonHandler.getCallbackData(), myTeamRenameButtonHandler);
         buttonHandler.put(myTeamDeleteButtonHandler.getCallbackData(), myTeamDeleteButtonHandler);
-        buttonHandler.put("MY_TEAM_GET_MEMBER_BUTTON", new MyTeamGetMemberButtonHandler(teamRepository, teamMemberRepository));
+        buttonHandler.put("MY_TEAM_GET_MEMBER_BUTTON", new MyTeamGetMemberButtonHandler(teamRepository,
+                teamMemberRepository));
         buttonHandler.put("MY_TEAM_ADD_MEMBER_BUTTON",
                 new MyTeamAddMemberButtonHandler(teamRepository, userRepository));
         buttonHandler.put("MY_TEAM_ADD_MEMBER_STEP_BUTTON",
@@ -84,6 +84,10 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         buttonHandler.put("TASK_BUTTON", new TaskButtonHandler());
         buttonHandler.put("TASK_ADD_BUTTON", new TaskAddButtonHandler(userRepository, teamRepository));
         buttonHandler.put(taskAddStepButtonHandler.getCallbackData(), taskAddStepButtonHandler);
+        buttonHandler.put("TASK_UNFINISHED_BUTTON", new TaskUnfinishedButtonHandler(userRepository,
+                teamRepository,
+                taskRepository));
+        buttonHandler.put("TASK_UNFINISHED_STEP_BUTTON", new TaskUnfinishedStepButtonHandler(teamRepository, taskRepository));
 
         //Добавим список команд для обработки
         RegisterCommandHandler registerCommandHandler = new RegisterCommandHandler(userRepository);
@@ -165,6 +169,17 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    public String escapeHtml(String text) {
+        if (text == null) {
+            return "";
+        }
+        return text.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
     }
 
     @Override

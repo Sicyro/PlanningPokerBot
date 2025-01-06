@@ -7,8 +7,11 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.sicuro.PlanningPokerBot.model.Task;
+import ru.sicuro.PlanningPokerBot.model.TaskState;
 import ru.sicuro.PlanningPokerBot.model.Team;
 import ru.sicuro.PlanningPokerBot.model.User;
+import ru.sicuro.PlanningPokerBot.reposirory.TaskRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.UserRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
@@ -20,13 +23,15 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class TaskAddButtonHandler implements ButtonHandler {
+public class TaskUnfinishedButtonHandler implements ButtonHandler {
+
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
+    private final TaskRepository taskRepository;
 
     @Override
     public String getCallbackData() {
-        return "TASK_ADD_BUTTON";
+        return "TASK_UNFINISHED_BUTTON";
     }
 
     @Override
@@ -41,7 +46,9 @@ public class TaskAddButtonHandler implements ButtonHandler {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-                .append("Выберите команду для которой необходимо добавить задачи")
+                .append("Выберите команду для которой необходимо просмотреть задачи")
+                .append("\n")
+                .append("В скобках указано количество задач")
                 .append("\n")
                 .append("Список ваших команд:")
                 .append("\n")
@@ -60,16 +67,21 @@ public class TaskAddButtonHandler implements ButtonHandler {
         if (!teams.isEmpty()) {
             for (Team team : teams) {
                 // Сформируем текст
+                List<Task> tasks = taskRepository.findByTeamAndStatus(team, TaskState.PENDING);
+
                 stringBuilder
                         .append("⚔️")
                         .append(team.getName())
+                        .append(" (")
+                        .append(tasks.size())
+                        .append(")")
                         .append("\n");
 
                 // Сформируем кнопки
                 List<InlineKeyboardButton> rowInLineRegister = new ArrayList<>();
                 var MyTeamButton = new InlineKeyboardButton();
-                MyTeamButton.setText(team.getName());
-                MyTeamButton.setCallbackData(String.format("TASK_ADD_STEP_BUTTON %s", team.getId()));
+                MyTeamButton.setText(String.format("%s (%d)", team.getName(), tasks.size()));
+                MyTeamButton.setCallbackData(String.format("TASK_UNFINISHED_STEP_BUTTON %s", team.getId()));
                 rowInLineRegister.add(MyTeamButton);
                 rowsInLine.add(rowInLineRegister);
             }

@@ -24,7 +24,9 @@ public class Task {
     private String title;
 
     private String description;
-    private String status = "pending"; // 'pending', 'completed'
+
+    @Enumerated(EnumType.STRING)
+    private TaskState status = TaskState.PENDING;
     private String link;
     private Integer finalEstimate;
     private LocalDateTime createdAt = LocalDateTime.now();
