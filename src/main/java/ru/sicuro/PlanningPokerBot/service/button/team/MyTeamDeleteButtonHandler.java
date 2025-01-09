@@ -56,7 +56,7 @@ public class MyTeamDeleteButtonHandler implements ButtonHandler, StepHandler {
                         team.getName()));
         deleteTeam.put(chatId, team);
         bot.sendMessage(message);
-        log.info("Пользователь({}) начал удаление команды", chatId);
+        log.info("Пользователь({}) начал удаление команды {}", chatId, team.getId());
         bot.setUserState(chatId, UserState.TEAM_WAITING_DELETE);
 
     }
