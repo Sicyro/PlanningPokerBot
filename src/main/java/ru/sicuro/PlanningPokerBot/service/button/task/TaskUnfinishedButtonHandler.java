@@ -66,9 +66,10 @@ public class TaskUnfinishedButtonHandler implements ButtonHandler {
 
         if (!teams.isEmpty()) {
             for (Team team : teams) {
-                // Сформируем текст
+                // Количество задач
                 List<Task> tasks = taskRepository.findByTeamAndStatus(team, TaskState.PENDING);
 
+                // Сформируем текст
                 stringBuilder
                         .append("⚔️")
                         .append(team.getName())
