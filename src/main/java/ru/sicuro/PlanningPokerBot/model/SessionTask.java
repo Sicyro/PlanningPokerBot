@@ -13,6 +13,9 @@ public class SessionTask {
     @EmbeddedId
     private SessionTaskId id;
 
+    @Enumerated(EnumType.STRING)
+    private PlanningSessionStatus status;
+
     @ManyToOne
     @MapsId("sessionId")
     @JoinColumn(name = "session_id")

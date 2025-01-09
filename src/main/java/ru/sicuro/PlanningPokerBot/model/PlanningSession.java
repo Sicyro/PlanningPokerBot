@@ -20,7 +20,8 @@ public class PlanningSession {
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    private String status = "active"; // 'active', 'completed'
+    @Enumerated(EnumType.STRING)
+    private PlanningSessionStatus status = PlanningSessionStatus.ACTIVE;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 }

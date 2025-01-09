@@ -52,7 +52,9 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
                             TeamRepository teamRepository,
                             TeamMemberRepository teamMemberRepository,
                             TaskRepository taskRepository,
-                            PlanningSessionRepository planningSessionRepository) {
+                            TaskVoteRepository taskVoteRepository,
+                            PlanningSessionRepository planningSessionRepository,
+                            SessionTaskRepository sessionTaskRepository) {
         this.config = config;
 
         // Обработчики кнопок бота
@@ -64,6 +66,9 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         TaskAddStepButtonHandler taskAddStepButtonHandler = new TaskAddStepButtonHandler(teamRepository,
                 userRepository,
                 taskRepository);
+        TaskStartVoteCompleteButtonHandler taskStartVoteCompleteButtonHandler = new TaskStartVoteCompleteButtonHandler(taskRepository,
+                taskVoteRepository,
+                sessionTaskRepository);
 
         // Нажатие кнопки
         buttonHandler.put("REGISTER_BUTTON", new RegisterButtonHandler(userRepository));
@@ -96,6 +101,19 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
                 taskRepository,
                 teamMemberRepository,
                 planningSessionRepository));
+        buttonHandler.put("TASK_START_VOTE_STEP_TWO_BUTTON", new TaskStartVoteStepTwoButtonHandler(taskRepository,
+                teamMemberRepository,
+                planningSessionRepository,
+                sessionTaskRepository));
+        buttonHandler.put("TASK_START_VOTE_VOTED_BUTTON", new TaskStartVoteVotedButtonHandler(taskRepository,
+                userRepository,
+                taskVoteRepository,
+                sessionTaskRepository));
+        buttonHandler.put(taskStartVoteCompleteButtonHandler.getCallbackData(), taskStartVoteCompleteButtonHandler);
+        buttonHandler.put("TASK_START_VOTE_CLOSE_BUTTON", new TaskStartVoteCloseButtonHandler(
+                teamRepository,
+                planningSessionRepository,
+                teamMemberRepository));
 
         //Добавим список команд для обработки
         RegisterCommandHandler registerCommandHandler = new RegisterCommandHandler(userRepository);
@@ -111,6 +129,7 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         buttonStepHandlers.add(myTeamRenameButtonHandler);
         buttonStepHandlers.add(myTeamDeleteButtonHandler);
         buttonStepHandlers.add(taskAddStepButtonHandler);
+        buttonStepHandlers.add(taskStartVoteCompleteButtonHandler);
 
         // Команды для меню
         List<BotCommand> listCommands = new ArrayList<>();
@@ -135,9 +154,9 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
             if (handler != null) {
                 handler.handle(update, this);
             } else {
-                for (StepHandler stepHandler : buttonStepHandlers) {
+                buttonStepHandlers.forEach(stepHandler -> {
                     stepHandler.handleStep(update, this);
-                }
+                });
             }
         } else if (update.hasCallbackQuery()) {
             // Обработка кнопок

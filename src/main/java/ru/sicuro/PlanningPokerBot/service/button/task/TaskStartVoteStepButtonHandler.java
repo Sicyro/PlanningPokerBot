@@ -41,6 +41,9 @@ public class TaskStartVoteStepButtonHandler implements ButtonHandler {
         String callbackQuery = update.getCallbackQuery().getData();
         String teamId = callbackQuery.split(" ")[1];
 
+        // Удалим статус для пользователя
+        bot.deleteUserState(chatId);
+
         // Класс для работы с текстом которы был уже передан
         EditMessageText message = new EditMessageText();
         message.setChatId(chatId);
@@ -53,9 +56,23 @@ public class TaskStartVoteStepButtonHandler implements ButtonHandler {
         // Получим задачи команды
         List<Task> tasks = taskRepository.findByTeamAndStatus(team, TaskState.PENDING);
 
-        String messageForMembers = String.format("Пользователь %s(%s) начал голосование \n",
+        // Проверим нет ли активной сессии
+        boolean planningSessionIsActive = false;
+        List<PlanningSession> planningSessions = planningSessionRepository.findByTeamAndStatus(team, PlanningSessionStatus.ACTIVE);
+        PlanningSession planningSession = new PlanningSession();
+        if (planningSessions.isEmpty()) {
+            planningSession.setTeam(team);
+            planningSessionRepository.save(planningSession);
+        } else {
+            // Вернём в ложь чтобы не отправлять сообщения о начале голосования
+            planningSession = planningSessions.get(0);
+            planningSessionIsActive = true;
+        }
+
+        String messageForMembers = String.format("Пользователь %s(%s) начал голосование для команды \"%s\" \n",
                 team.getCreatedBy().getFullName(),
-                team.getCreatedBy().getUsername());
+                team.getCreatedBy().getUsername(),
+                team.getName());
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
@@ -93,7 +110,9 @@ public class TaskStartVoteStepButtonHandler implements ButtonHandler {
                 List<InlineKeyboardButton> rowInLine = new ArrayList<>();
                 var button = new InlineKeyboardButton();
                 button.setText(task.getTitle());
-                button.setCallbackData(String.format("TASK_START_VOTE_STEP_2_BUTTON %s", task.getId()));
+                button.setCallbackData(String.format("TASK_START_VOTE_STEP_TWO_BUTTON %s %s",
+                        task.getId(),
+                        planningSession.getId()));
                 rowInLine.add(button);
                 rowsInLine.add(rowInLine);
             }
@@ -106,10 +125,17 @@ public class TaskStartVoteStepButtonHandler implements ButtonHandler {
         } else {
             stringBuilder.delete(0, stringBuilder.length());
             stringBuilder
-                    .append("У вас нет незавершённых задач!")
-                    .append("\n")
-                    .append("Создайте задачу в меню задач");
+                    .append("У вас нет незавершённых задач!");
         }
+
+        // Сформируем кнопку закрытия голосования
+        List<InlineKeyboardButton> rowInLine = new ArrayList<>();
+        var button = new InlineKeyboardButton();
+        button.setText("❌Закрыть голосование");
+        button.setCallbackData(String.format("TASK_START_VOTE_CLOSE_BUTTON %s",
+                team.getId()));
+        rowInLine.add(button);
+        rowsInLine.add(rowInLine);
 
         // Установим текст
         message.setText(stringBuilder.toString());
@@ -119,19 +145,13 @@ public class TaskStartVoteStepButtonHandler implements ButtonHandler {
         markup.setKeyboard(rowsInLine);
         message.setReplyMarkup(markup);
 
+        // Отправка сообщения
         bot.sendMessage(message);
+        log.info("Пользователь({}) начал голосование", chatId);
 
-        // Сохраним данные о сессии
-        PlanningSession planningSession = new PlanningSession();
-        planningSession.setTeam(team);
-        planningSessionRepository.save(planningSession);
-
-        if (!started) {
+        if (!started || planningSessionIsActive) {
             // Если нет задач, то не оповещаем пользователей
             return;
-        } else {
-            log.info("Пользователь({}) начал голосование. Номер сессии:",
-                    chatId);
         }
 
         // Оповестим команду о начале голосования
