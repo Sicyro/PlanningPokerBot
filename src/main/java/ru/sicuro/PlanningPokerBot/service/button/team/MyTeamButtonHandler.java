@@ -45,7 +45,6 @@ public class MyTeamButtonHandler implements ButtonHandler {
 
         // Получим данные для работы с командой
         Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена"));
-
         // Количество участников в команде
         var teamMembers = teamMemberRepository.findByTeam(team);
 

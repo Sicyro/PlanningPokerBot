@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.sicuro.PlanningPokerBot.model.Team;
+import ru.sicuro.PlanningPokerBot.reposirory.TaskRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
@@ -24,6 +25,7 @@ public class MyTeamDeleteButtonHandler implements ButtonHandler, StepHandler {
     private static final Map<Long, Team> deleteTeam = new ConcurrentHashMap<>();
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
+    private final TaskRepository taskRepository;
 
     @Override
     public String getCallbackData() {
@@ -46,7 +48,11 @@ public class MyTeamDeleteButtonHandler implements ButtonHandler, StepHandler {
         Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена"));
 
         message.setText(
-                String.format("Для подтверждения удаления введите название команды (%s)",
+                String.format("""
+                                ❗Вместе с командой удалятся данные о задачах и участниках команды!
+                                
+                                Для подтверждения удаления введите название команды (%s)
+                                """,
                         team.getName()));
         deleteTeam.put(chatId, team);
         bot.sendMessage(message);
@@ -80,6 +86,8 @@ public class MyTeamDeleteButtonHandler implements ButtonHandler, StepHandler {
             return;
         }
 
+        // Удалим данные о задачах
+        taskRepository.deleteByTeam(team);
         // Удалим данные об участниках
         teamMemberRepository.deleteByTeam(team);
         // Удалим команду

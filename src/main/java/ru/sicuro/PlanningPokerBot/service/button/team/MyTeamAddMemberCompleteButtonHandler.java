@@ -44,9 +44,8 @@ public class MyTeamAddMemberCompleteButtonHandler implements ButtonHandler {
 
         // Получим данные для работы с командой
         Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена!"));
-
         // Данные пользователя
-        User user = userRepository.findById(chatId).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден!"));
+        User user = userRepository.findByChatId(chatId).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден!"));
 
         if (result.equals("0")) {
             // Если не согласился

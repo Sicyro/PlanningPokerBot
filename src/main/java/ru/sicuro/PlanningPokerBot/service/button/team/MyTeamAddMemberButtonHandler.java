@@ -46,8 +46,7 @@ public class MyTeamAddMemberButtonHandler implements ButtonHandler {
         Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена!"));
 
         // Данные пользователя
-        User user = userRepository.findById(chatId).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден!"));
-
+        User user = userRepository.findByChatId(chatId).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден!"));
         // Получим список пользователей не в команде
         var users = userRepository.findUsersNotInTeamAndNotCurrentUser(team, user);
 
@@ -61,14 +60,14 @@ public class MyTeamAddMemberButtonHandler implements ButtonHandler {
 
     private static InlineKeyboardMarkup getInlineKeyboardMarkup(List<User> users, Team team) {
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-        for (User user1 : users) {
+        for (User user : users) {
             // Сформируем кнопки
             List<InlineKeyboardButton> rowInLine = new ArrayList<>();
             var button = new InlineKeyboardButton();
-            button.setText(user1.getFullName());
+            button.setText(user.getFullName());
             // Вместе с кнопкой добавляем id пользователя и команды для дальнейшего парсинга
             button.setCallbackData(String.format("MY_TEAM_ADD_MEMBER_STEP_BUTTON %s %s",
-                    user1.getId(),
+                    user.getId(),
                     team.getId()));
             rowInLine.add(button);
             rowsInLine.add(rowInLine);

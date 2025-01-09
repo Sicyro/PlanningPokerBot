@@ -39,7 +39,6 @@ public class MyTeamAddMemberStepButtonHandler implements ButtonHandler {
 
         // Получим данные для работы с командой
         Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена!"));
-
         // Данные пользователя
         User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден!"));
 
