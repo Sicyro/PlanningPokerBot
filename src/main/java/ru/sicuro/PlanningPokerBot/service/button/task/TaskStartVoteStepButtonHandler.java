@@ -69,15 +69,13 @@ public class TaskStartVoteStepButtonHandler implements ButtonHandler {
             planningSessionIsActive = true;
         }
 
-        String messageForMembers = String.format("Пользователь %s начал голосование для команды \"%s\" \n",
+        String messageForMembers = String.format("Пользователь %s начал голосование для команды %s \n\n",
                 team.getCreatedBy().getView(),
                 team.getView());
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-                .append("Список задач для команды <b>")
-                .append(team.getViewHtml())
-                .append("</b>:")
+                .append("Список задач:")
                 .append("\n\n");
 
         // Сортируем по id

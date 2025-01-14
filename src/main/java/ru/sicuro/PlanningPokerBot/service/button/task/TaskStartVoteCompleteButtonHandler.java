@@ -56,10 +56,6 @@ public class TaskStartVoteCompleteButtonHandler implements ButtonHandler, StepHa
             taskRepository.save(task);
         }
 
-        // Закроем задачу для голосования
-        List<SessionTask> sessionTasks = sessionTaskRepository.findByTask(task);
-        sessionTaskRepository.deleteAll(sessionTasks);
-
         // Класс для работы с текстом которы был уже передан
         EditMessageText message = new EditMessageText();
         message.setChatId(chatId);

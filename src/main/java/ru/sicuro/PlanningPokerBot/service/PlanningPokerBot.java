@@ -113,7 +113,8 @@ public class PlanningPokerBot extends TelegramLongPollingBot {
         buttonHandler.put("TASK_START_VOTE_CLOSE_BUTTON", new TaskStartVoteCloseButtonHandler(
                 teamRepository,
                 planningSessionRepository,
-                teamMemberRepository));
+                teamMemberRepository,
+                sessionTaskRepository));
 
         //Добавим список команд для обработки
         RegisterCommandHandler registerCommandHandler = new RegisterCommandHandler(userRepository);

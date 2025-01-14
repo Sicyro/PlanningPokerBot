@@ -57,11 +57,20 @@ public class TaskStartVoteStepTwoButtonHandler implements ButtonHandler {
 
         sessionTaskRepository.save(sessionTask);
 
-        // Класс для работы с текстом которы был уже передан
+        String messageForMembers = String.format("""
+                Голосование за задачу: %s
+                
+                Описание: %s""",
+                task.getViewHtml(),
+                task.getDescriptionHtml());
+
+        // Класс для работы с текстом который был уже передан
         EditMessageText message = new EditMessageText();
         message.setChatId(chatId);
         message.setMessageId(messageId);
-        message.setText("Голосование за задачу: " + task.getView());
+        message.setParseMode(ParseMode.HTML);
+        message.setDisableWebPagePreview(true);
+        message.setText(messageForMembers);
 
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         // Сформируем кнопки
@@ -82,9 +91,6 @@ public class TaskStartVoteStepTwoButtonHandler implements ButtonHandler {
         log.info("Пользователь({}) начал голосование за задачу {}", chatId, task);
 
         // Оповестим команду о начале голосования за задачу
-        String messageForMembers = String.format("""
-                Голосование за задачу %s""",
-                task.getViewHtml());
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);

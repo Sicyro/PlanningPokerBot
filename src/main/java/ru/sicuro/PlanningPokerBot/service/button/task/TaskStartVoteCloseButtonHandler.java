@@ -7,11 +7,9 @@ import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.sicuro.PlanningPokerBot.model.PlanningSession;
-import ru.sicuro.PlanningPokerBot.model.PlanningSessionStatus;
-import ru.sicuro.PlanningPokerBot.model.Team;
-import ru.sicuro.PlanningPokerBot.model.TeamMember;
+import ru.sicuro.PlanningPokerBot.model.*;
 import ru.sicuro.PlanningPokerBot.reposirory.PlanningSessionRepository;
+import ru.sicuro.PlanningPokerBot.reposirory.SessionTaskRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamMemberRepository;
 import ru.sicuro.PlanningPokerBot.reposirory.TeamRepository;
 import ru.sicuro.PlanningPokerBot.service.PlanningPokerBot;
@@ -27,6 +25,7 @@ public class TaskStartVoteCloseButtonHandler implements ButtonHandler {
     private final TeamRepository teamRepository;
     private final PlanningSessionRepository planningSessionRepository;
     private final TeamMemberRepository teamMemberRepository;
+    private final SessionTaskRepository sessionTaskRepository;
 
     @Override
     public String getCallbackData() {
@@ -47,15 +46,39 @@ public class TaskStartVoteCloseButtonHandler implements ButtonHandler {
 
         // Получим команду
         Team team = teamRepository.findById(Long.valueOf(teamId)).orElseThrow(() -> new IllegalArgumentException("Команда не найдена!"));
-        // Получим сессию
+
+        PlanningSession planningSession = null;
+                // Завершим все активные для команды
         List<PlanningSession> planningSessions = planningSessionRepository.findByTeamAndStatus(team, PlanningSessionStatus.ACTIVE);
-        planningSessions.forEach(session -> {
+        for (PlanningSession session : planningSessions) {
             session.setCompletedAt(LocalDateTime.now());
             session.setStatus(PlanningSessionStatus.COMPLETED);
-        });
+            planningSession = session;
+        }
         planningSessionRepository.saveAll(planningSessions);
 
-        message.setText("Голосование закрыто!");
+        // Получим задачи в сессии
+        List<SessionTask> sessionTasks = sessionTaskRepository.findBySession(planningSession);
+
+        // Сформируем сообщение:
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append("Результат голосования: ")
+                .append("\n\n");
+
+        for (SessionTask sessionTask : sessionTasks) {
+            // Если задача не завершена не показываем итоговый результат
+            if (sessionTask.getTask().getStatus() == TaskState.PENDING) {
+                continue;
+            }
+            stringBuilder
+                    .append(sessionTask.getTask().getView())
+                    .append(": ")
+                    .append(sessionTask.getTask().getFinalEstimate())
+                    .append("\n");
+        }
+
+        message.setText("Голосование закрыто! \n\n" + stringBuilder);
 
         // Отправка сообщения
         bot.sendMessage(message);
@@ -66,9 +89,10 @@ public class TaskStartVoteCloseButtonHandler implements ButtonHandler {
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(String.format("Пользователь %s закончил голосование для команды \"%s\"",
+        sendMessage.setText(String.format("Пользователь %s закончил голосование для команды %s \n\n %s",
                 team.getCreatedBy().getView(),
-                team.getView()));
+                team.getView(),
+                stringBuilder));
         sendMessage.setDisableWebPagePreview(true);
         sendMessage.setParseMode(ParseMode.HTML);
 

@@ -32,6 +32,18 @@ public class Task implements Viewer {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 
+    public String getDescription() {
+        if (description == null) {
+            return "-";
+        } else {
+            return description;
+        }
+    }
+
+    public String getDescriptionHtml() {
+        return Viewer.escapeHtml(getDescription());
+    }
+
     @Override
     public String getViewHtml() {
 
