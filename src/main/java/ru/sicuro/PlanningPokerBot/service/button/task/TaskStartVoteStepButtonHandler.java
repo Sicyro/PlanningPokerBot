@@ -69,15 +69,14 @@ public class TaskStartVoteStepButtonHandler implements ButtonHandler {
             planningSessionIsActive = true;
         }
 
-        String messageForMembers = String.format("Пользователь %s(%s) начал голосование для команды \"%s\" \n",
-                team.getCreatedBy().getFullName(),
-                team.getCreatedBy().getUsername(),
-                team.getName());
+        String messageForMembers = String.format("Пользователь %s начал голосование для команды \"%s\" \n",
+                team.getCreatedBy().getView(),
+                team.getView());
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-                .append("Список задач для команды <b>⚔️")
-                .append(bot.escapeHtml(team.getName()))
+                .append("Список задач для команды <b>")
+                .append(team.getViewHtml())
                 .append("</b>:")
                 .append("\n\n");
 
@@ -91,20 +90,9 @@ public class TaskStartVoteStepButtonHandler implements ButtonHandler {
         if (!tasks.isEmpty()) {
             for (Task task : tasks) {
                 // Сформируем текст
-                if (task.getLink() != null) {
-                    stringBuilder
-                            .append("🎯<a href='")
-                            .append(bot.escapeHtml(task.getLink()))
-                            .append("'>")
-                            .append(bot.escapeHtml(task.getTitle()))
-                            .append("</a>")
-                            .append("\n");
-                } else {
-                    stringBuilder
-                            .append("🎯")
-                            .append(bot.escapeHtml(task.getTitle()))
-                            .append("\n");
-                }
+                stringBuilder
+                        .append(task.getViewHtml())
+                        .append("\n");
 
                 // Сформируем кнопки
                 List<InlineKeyboardButton> rowInLine = new ArrayList<>();

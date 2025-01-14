@@ -55,7 +55,7 @@ public class TaskStartVoteVotedButtonHandler implements ButtonHandler {
 
         // Если нет, то прерываем голосование
         if (sessionTasks.isEmpty()) {
-            message.setText("Голосование за задачу закрыто! 🎯" + task.getTitle());
+            message.setText("Голосование за задачу закрыто! " + task.getView());
             bot.sendMessage(message);
             return;
         }

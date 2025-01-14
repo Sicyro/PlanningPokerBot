@@ -43,10 +43,10 @@ public class MyTeamAddMemberStepButtonHandler implements ButtonHandler {
         User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new IllegalArgumentException("Пользователь не найден!"));
 
         String text = String.format("""
-                ⚡Вас приглашают в команду ⚔️%s
+                ⚡Вас приглашают в команду %s
                 Принять приглашение?
                 """,
-                team.getName());
+                team.getView());
 
         // Формируем сообщение для пользователя
         SendMessage message = new SendMessage();
@@ -61,10 +61,9 @@ public class MyTeamAddMemberStepButtonHandler implements ButtonHandler {
         message.setReplyMarkup(markup);
 
         bot.sendMessage(message);
-        bot.sendMessage(chatId, String.format("⚡Приглашение для пользователя (%s(%s)) в команду \"%s\" отправлено",
-                user.getFullName(),
-                user.getUsername(),
-                team.getName()));
+        bot.sendMessage(chatId, String.format("⚡Приглашение для пользователя (%s) в команду \"%s\" отправлено",
+                user.getView(),
+                team.getView()));
         log.info("Приглашение для пользователя({}) в команду {}({}) отправлено",
                 user.getChatId(),
                 team.getName(),

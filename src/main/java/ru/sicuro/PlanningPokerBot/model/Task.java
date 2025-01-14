@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class Task implements Viewer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,5 +32,18 @@ public class Task {
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime completedAt;
 
-    // Getters and Setters
+    @Override
+    public String getViewHtml() {
+
+        if (link != null) {
+            return "🎯<a href='" + Viewer.escapeHtml(link) + "'>" + Viewer.escapeHtml(title) + "</a>";
+        } else {
+            return getView();
+        }
+    }
+
+    @Override
+    public String getView() {
+        return "🎯" + Viewer.escapeHtml(title);
+    }
 }

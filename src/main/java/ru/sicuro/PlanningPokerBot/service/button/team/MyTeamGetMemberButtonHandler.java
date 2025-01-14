@@ -50,11 +50,8 @@ public class MyTeamGetMemberButtonHandler implements ButtonHandler {
         for (TeamMember teamMember : teamMembers) {
             User user = teamMember.getUser();
             stringBuilder
-                    .append("⭐")
-                    .append(user.getFullName())
-                    .append("(")
-                    .append(user.getUsername())
-                    .append(")\n");
+                    .append(user.getView())
+                    .append("\n");
         }
 
         message.setText(stringBuilder.toString());

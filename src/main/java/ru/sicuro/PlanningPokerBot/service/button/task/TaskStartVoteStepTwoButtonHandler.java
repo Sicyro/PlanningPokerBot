@@ -61,7 +61,7 @@ public class TaskStartVoteStepTwoButtonHandler implements ButtonHandler {
         EditMessageText message = new EditMessageText();
         message.setChatId(chatId);
         message.setMessageId(messageId);
-        message.setText("Голосование за задачу: 🎯" + task.getTitle());
+        message.setText("Голосование за задачу: " + task.getView());
 
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         // Сформируем кнопки
@@ -83,9 +83,8 @@ public class TaskStartVoteStepTwoButtonHandler implements ButtonHandler {
 
         // Оповестим команду о начале голосования за задачу
         String messageForMembers = String.format("""
-                Голосование за задачу 🎯<a href='%s'>%s</a>:""",
-                bot.escapeHtml(task.getLink()),
-                bot.escapeHtml(task.getTitle()));
+                Голосование за задачу %s""",
+                task.getViewHtml());
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
@@ -108,41 +107,46 @@ public class TaskStartVoteStepTwoButtonHandler implements ButtonHandler {
         // 1
         List<InlineKeyboardButton> rowInLine = new ArrayList<>();
         var button = new InlineKeyboardButton();
-        button.setText("1");
+        button.setText("1 (3 дня)");
         button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 1 %s", task.getId()));
         rowInLine.add(button);
 
         // 2
         button = new InlineKeyboardButton();
-        button.setText("2");
+        button.setText("2 (<1 спринта)");
         button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 2 %s", task.getId()));
-        rowInLine.add(button);
-
-        // 3
-        button = new InlineKeyboardButton();
-        button.setText("3");
-        button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 3 %s", task.getId()));
         rowInLine.add(button);
 
         // Завершим строку
         rowsInLine.add(rowInLine);
         rowInLine = new ArrayList<>();
 
+        // 3
+        button = new InlineKeyboardButton();
+        button.setText("3 (1 спринт)");
+        button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 3 %s", task.getId()));
+        rowInLine.add(button);
+
+
         // 5
         button = new InlineKeyboardButton();
-        button.setText("5");
+        button.setText("5 (1.5 спринта)");
         button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 5 %s", task.getId()));
         rowInLine.add(button);
 
+        // Завершим строку
+        rowsInLine.add(rowInLine);
+        rowInLine = new ArrayList<>();
+
         // 8
         button = new InlineKeyboardButton();
-        button.setText("8");
+        button.setText("8 (2 спринта)");
         button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 8 %s", task.getId()));
         rowInLine.add(button);
 
         //13
         button = new InlineKeyboardButton();
-        button.setText("13");
+        button.setText("13 (3 спринта)");
         button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 13 %s", task.getId()));
         rowInLine.add(button);
 
@@ -152,29 +156,29 @@ public class TaskStartVoteStepTwoButtonHandler implements ButtonHandler {
 
         //21
         button = new InlineKeyboardButton();
-        button.setText("21");
+        button.setText("21 (5 спринтов)");
         button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 21 %s", task.getId()));
         rowInLine.add(button);
 
         //34
         button = new InlineKeyboardButton();
-        button.setText("34");
+        button.setText("34 (8 спринтов)");
         button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 34 %s", task.getId()));
-        rowInLine.add(button);
-
-        //55
-        button = new InlineKeyboardButton();
-        button.setText("55");
-        button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 55 %s", task.getId()));
         rowInLine.add(button);
 
         // Завершим строку
         rowsInLine.add(rowInLine);
         rowInLine = new ArrayList<>();
 
+        //55
+        button = new InlineKeyboardButton();
+        button.setText("55 (10 спринтов)");
+        button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 55 %s", task.getId()));
+        rowInLine.add(button);
+
         //89
         button = new InlineKeyboardButton();
-        button.setText("89");
+        button.setText("89 (>8 спринтов)");
         button.setCallbackData(String.format("TASK_START_VOTE_VOTED_BUTTON 89 %s", task.getId()));
         rowInLine.add(button);
 

@@ -59,8 +59,7 @@ public class MyTeamsButtonHandler implements ButtonHandler {
         for (Team team : teams) {
             // Сформируем текст
             stringBuilder
-                    .append("⚔️")
-                    .append(team.getName())
+                    .append(team.getView())
                     .append("\n");
 
             // Сформируем кнопки

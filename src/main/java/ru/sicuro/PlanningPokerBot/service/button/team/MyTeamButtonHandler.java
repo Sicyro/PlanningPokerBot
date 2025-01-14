@@ -50,14 +50,14 @@ public class MyTeamButtonHandler implements ButtonHandler {
 
         // Строка вывода
         String text = String.format("""
-                Команда: ⚔️%s
+                Команда: %s
                 
                 📅Дата создания: %s
                 👨‍👩‍👧‍👦Количество участников: %d
                
                 Выберите действие над командой:
                 """,
-                team.getName(),
+                team.getView(),
                 team.getCreatedAt().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                 teamMembers.size());
 

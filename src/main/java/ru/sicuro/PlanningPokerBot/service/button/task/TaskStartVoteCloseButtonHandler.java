@@ -66,10 +66,9 @@ public class TaskStartVoteCloseButtonHandler implements ButtonHandler {
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(String.format("Пользователь %s(%s) закончил голосование для команды \"%s\"",
-                team.getCreatedBy().getFullName(),
-                team.getCreatedBy().getUsername(),
-                team.getName()));
+        sendMessage.setText(String.format("Пользователь %s закончил голосование для команды \"%s\"",
+                team.getCreatedBy().getView(),
+                team.getView()));
         sendMessage.setDisableWebPagePreview(true);
         sendMessage.setParseMode(ParseMode.HTML);
 

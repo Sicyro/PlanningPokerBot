@@ -71,8 +71,7 @@ public class TaskUnfinishedButtonHandler implements ButtonHandler {
 
                 // Сформируем текст
                 stringBuilder
-                        .append("⚔️")
-                        .append(team.getName())
+                        .append(team.getView())
                         .append(" (")
                         .append(tasks.size())
                         .append(")")

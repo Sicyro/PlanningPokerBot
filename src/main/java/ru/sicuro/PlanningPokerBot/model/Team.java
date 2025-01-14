@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Team {
+public class Team implements Viewer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,4 +24,14 @@ public class Team {
     private User createdBy;
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Override
+    public String getViewHtml() {
+        return "⚔️" + Viewer.escapeHtml(name);
+    }
+
+    @Override
+    public String getView() {
+        return "⚔️" + name;
+    }
 }

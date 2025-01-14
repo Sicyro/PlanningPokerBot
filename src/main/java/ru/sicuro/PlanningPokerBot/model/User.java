@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements Viewer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -50,5 +50,20 @@ public class User {
         newUser.setCreatedAt(LocalDateTime.now());
 
         return newUser;
+    }
+
+    @Override
+    public String getViewHtml() {
+        return "⭐" + Viewer.escapeHtml(fullName) + "(" + Viewer.escapeHtml(username) + ")";
+    }
+
+    @Override
+    public String getView() {
+        if (fullName == null) {
+            return username;
+        } else {
+            return "⭐" + fullName + "(" + username + ")";
+        }
+
     }
 }

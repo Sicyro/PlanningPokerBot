@@ -49,10 +49,12 @@ public class TaskStartVoteCompleteButtonHandler implements ButtonHandler, StepHa
 
         Task task = taskRepository.findById(Long.valueOf(taskId)).orElseThrow(() -> new IllegalArgumentException("Задача не найдена!"));
         Double finalEstimate = taskVoteRepository.findAverageVoteByTask(task);
-        task.setFinalEstimate(findClosest(finalEstimate));
-        task.setCompletedAt(LocalDateTime.now());
-        task.setStatus(TaskState.COMPLETED);
-        taskRepository.save(task);
+        if (finalEstimate != null) {
+            task.setFinalEstimate(findClosest(finalEstimate));
+            task.setCompletedAt(LocalDateTime.now());
+            task.setStatus(TaskState.COMPLETED);
+            taskRepository.save(task);
+        }
 
         // Закроем задачу для голосования
         List<SessionTask> sessionTasks = sessionTaskRepository.findByTask(task);
@@ -67,8 +69,8 @@ public class TaskStartVoteCompleteButtonHandler implements ButtonHandler, StepHa
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-                .append("Результат голосования за задачу 🎯")
-                .append(task.getTitle())
+                .append("Результат голосования за задачу ")
+                .append(task.getView())
                 .append(":\n")
                 .append("Средняя оценка: ")
                 .append(task.getFinalEstimate())
@@ -81,11 +83,8 @@ public class TaskStartVoteCompleteButtonHandler implements ButtonHandler, StepHa
 
         taskVotes.forEach(taskVote -> {
             stringBuilder
-                    .append("⭐")
-                    .append(taskVote.getUser().getFullName())
-                    .append("(")
-                    .append(taskVote.getUser().getUsername())
-                    .append("): <b>")
+                    .append(taskVote.getUser().getView())
+                    .append(": <b>")
                     .append(taskVote.getVote())
                     .append("</b>\n");
         });

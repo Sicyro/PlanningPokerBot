@@ -48,8 +48,8 @@ public class TaskUnfinishedStepButtonHandler implements ButtonHandler {
         message.setParseMode(ParseMode.HTML);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-                .append("Список незавершённых задач для команды <b>⚔️")
-                .append(bot.escapeHtml(team.getName()))
+                .append("Список незавершённых задач для команды <b>")
+                .append(team.getViewHtml())
                 .append("</b>:")
                 .append("\n\n");
 
@@ -57,20 +57,9 @@ public class TaskUnfinishedStepButtonHandler implements ButtonHandler {
 
         if (!tasks.isEmpty()) {
             for (Task task : tasks) {
-                if (task.getLink() != null) {
-                    stringBuilder
-                            .append("🎯<a href='")
-                            .append(bot.escapeHtml(task.getLink()))
-                            .append("'>")
-                            .append(bot.escapeHtml(task.getTitle()))
-                            .append("</a>")
-                            .append("\n");
-                } else {
-                    stringBuilder
-                            .append("🎯")
-                            .append(bot.escapeHtml(task.getTitle()))
-                            .append("\n");
-                }
+                stringBuilder
+                        .append(task.getViewHtml())
+                        .append("\n");
             }
         } else {
             stringBuilder.delete(0, stringBuilder.length());

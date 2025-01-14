@@ -52,9 +52,8 @@ public class MyTeamAddMemberCompleteButtonHandler implements ButtonHandler {
             message.setText("❌Приглашение отклонено!");
             // Сообщение для отправителя
             bot.sendMessage(team.getCreatedBy().getChatId(),
-                    String.format("❌Пользователь (%s(%s)) отклонил(а) приглашение!",
-                            user.getFullName(),
-                            user.getUsername()));
+                    String.format("❌Пользователь (%s) отклонил(а) приглашение!",
+                            user.getView()));
             bot.sendMessage(message);
             log.info("Пользователь ({}) отклонил(а) приглашение!", user.getChatId());
             return;
@@ -81,9 +80,8 @@ public class MyTeamAddMemberCompleteButtonHandler implements ButtonHandler {
         bot.sendMessage(message);
         // Сообщение для отправителя
         bot.sendMessage(team.getCreatedBy().getChatId(),
-                String.format("✅Пользователь (%s(%s)) принял(а) приглашение!",
-                        user.getFullName(),
-                        user.getUsername()));
+                String.format("✅Пользователь (%s) принял(а) приглашение!",
+                        user.getView()));
         log.info("Пользователь ({}) принял(а) приглашение в команду \"{}\"",
                 user.getChatId(),
                 team.getName());
