@@ -36,7 +36,8 @@ public class StartCommandHandler implements CommandHandler {
         User user = queueUser.get();
 
         // Формируем ответное сообщение
-        String welcomeMessage = String.format("Привет, %s✌️! Добро пожаловать в бот планирования Poker!",
+        String welcomeMessage = String.format("Привет, %s✌️! Добро пожаловать в бот планирования Poker! \n" +
+                        "Для регистрации введите команду /register",
                 user.getFullNameOrUsername());
 
         SendMessage message = new SendMessage();
